@@ -2,15 +2,15 @@
 library ieee;
 use ieee.std_logic_1164.all  ;
 
-entity Lab1_BidirectionalShiftRegister is
+entity BidirectionalShiftRegister is
 	port(  clk,reset ,sir, sil : in std_logic;
 			mode : in std_logic_vector(1 downto 0);
 			datain : in std_logic_vector(7 downto 0);
 			dataout : out std_logic_vector(7 downto 0);
 		   sor ,sol : out std_logic);
-end Lab1_BidirectionalShiftRegister;
+end BidirectionalShiftRegister;
 
-architecture behave of Lab1_BidirectionalShiftRegister is
+architecture behave of BidirectionalShiftRegister is
 
 
 signal shift: std_logic_vector(7 downto 0);
