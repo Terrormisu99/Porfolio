@@ -3,16 +3,6 @@
 Deadline (3a): 25th Oct 2021 EST 23:59
 Deadline (3b): 5th Nov 2021 EST 23:59
 
-## Getting started
-First, clone the git repository onto your home directory on Docker container or the `eceubuntu` lab  server.
-
-```
-$ mkdir -p $HOME/ece627-f21/labs
-$ cd $HOME/ece627-f21/labs
-$ git clone ist-git@git.uwaterloo.ca:ece627-f21/labs/b2luong-lab3.git
-$ cd b2luong-lab3
-```
-
 ## Objective :
 
 Matrix multiplication is a popular kernel in high-performance scientific computing, gaming, and now even machine learning workloads. 
@@ -263,24 +253,6 @@ After running synthesis via `make vivado` (sets N=4, M=8),  you can open `utiliz
 +-------------------------+------+-------+-----------+-------+
 ```
 
-## Creating your design : 
-
-### Design [Lab3a]
-You have to create two documents -- `lab3.dot` and `lab3.json`.
-
-1. [`lab3.dot`] Draw a high-level picture of your systolic array for 2x2 design and clearly label all connections between blocks and how they interact with the top-level `A` and `B` ports.
-    A _graphviz_ template is provided. Edit this file using `vi` or `emacs` and run the following to generate a PDF diagram for submission. Only edit the `fillme` text labels.
-    ```
-    dot -Tpdf lab3.dot > lab3.pdf
-    ```
-2. [`lab3.json`] Draw a timing diagram for one complete execution of a 2x2 systolic array for a 4x4 matrix. The timing diagram should show symbolic values for each signal as computation proceeds through the systolic array. Assume that signals `in_a` and `in_b`, also declared in `systolic.sv`, are connected to the `in_a` and `in_b` inputs of each PE (for example, `in_a[0][0]` for the `in_a` input of the top-left PE at position `(0,0)`).
-    You need to fill `lab3.json` in Wavedrom syntax for signals `init`, `valid_D`, and `D`. Compile this to PNG for submission. 
-    ```
-    wavedrom-cli -i lab3.json -p lab3.png
-    ```
-
-You may notice that because the testbench is synchronous, there is one cycle of latency between the address signals and the data provided to your module. You can assume (if it makes your design easier) that the data provided after reset is deasserted, and before the valid data, is always zero and therefore does not affect the result if your PEs begin accumulation immediately after reset.
-
 ### Complete Implementation [Lab 3b]
 
 You must provide RTL implementations of the following designs with associated interfaces. Only make changes to these three files.
@@ -325,57 +297,3 @@ You must provide RTL implementations of the following designs with associated in
 11. `valid_D` : N bits x N bits output : Connected to each PE's `valid_D` (`valid_D[0][0]`->`PE[0][0]`, and so on)
 
 
-## Evaluating your design : 
-
-### Simulation
-
-To test the functionality of your `pe` design, type `make pe-test`. Use `gtkwave sim.vcd` to view the waveforms .
-
-To compile and simulate your RTL design, simply type `make systolic-test M=<value1> and N=<value2>`. Please replace `<value1>` and `<value2>` with the value you wish to use.
-
-To functionally test your design end-to-end from matrix multiplication operation using our Python test wrappers, use `make test M=<value1> N=<value2>`. This will first build the Verilator testbench and run the simulation to generate the output memory snapshot of the result matrix. Subsequently, a python script will compare your output memory with the correct result will let you know if there are any errors using friendly Waterloo syntax.
-
-### Synthesis 
-
-To run synthesis and generate the utilization report, 
-
-### For FPGAs;
-Simply type `make vivado M=<value1> N=<value2>`. Xilinx Vivado will start in GUI mode and launch synthesis. At the end of synthesis, Vivado will generate a file called `utilization.txt` in the same folder, with information about resource consumption of your design.
-
-### For ASIC using FreePDK45:
-Simply type `make asic_synth M=<value1> N=<value2>`. Design Compiler will launch synthesis and generate reports. For the reports, a file called `area.rpt` in the same folder, will have information about resource consumption of your design.
-
-## Submitting your solution
-
-[Lab3a] Please discuss your design sketch with the lab TAs before you write any code.
-```
-$ make lab3a
-$ git commit -a -m 'design documents are ready for inspection'
-$ git push origin master
-```
-
-[Lab3b] Submit the RTL as per instructions below:
-
-Please fill in your solution code in `pe.v`, `counter.v`, `control.v`, and `systolic.sv` files. Do not edit the cascaded counter instantiation in `control.v` You are expected to reuse and modify your RTL from Lab1 and Lab2 here. Ensure that (1) the test output matches the waveforms shown above, and (2) resource utilization matches those reported in the synthesis logs shown above. Don't worry if the synthesis output does not exactly match our reported utilization.
-
-You can commit your design in two steps:
-```
-git commit -a -m "solution is ready for grading"
-git push origin master
-```
-You may commit and push as many times are you want prior to submission deadline.
-
-### Grading Policy
-
-Look at the grade rule in Makefile. This is the script we will use to grade you
-and we are giving you this script to self-assess.
-- 5% of the lab grade is reserved for submitting a design document with relevant design details provided. It is OK for your design to have some flaws at this stage. We are here to help.
-- 10% of the lab grade will be reserved for passing verilator lint checks on `pe.v`, `counter.v`, `control.v`, and `systolic.sv`. 
-- 20% of the lab grade will be reserved for passing M=4 N=4 combination. Our scripts will replace `dut_tb.cpp` so do not edit that file.
-- 20% of the lab grade will be reserved for passing M=8 N=4 combination. Our scripts will replace `dut_tb.cpp` so do not edit that file.
-- 20% of the lab grade will be reserved for passing M=16 N=4 combination. Our scripts will replace `dut_tb.cpp` so do not edit that file.
-- 20% of the lab grade will be reserved for passing M=8 N=8 combination. Our scripts will replace `dut_tb.cpp` so do not edit that file.
-- 3% of the lab grade will be assigned to the FPGA synthesis results being within 10% of the reported utilization numbers for "Slice LUTs" and "Slice Registers".
-- 2% of the lab grade will be assigned to the ASIC synthesis results being within 10% of the reported utilization numbers for "Combinational Cells" and "Sequential Cells".
-- To grade your code, just type `make grade` and `cat grade.csv` to check your
-- Penalty for late submissions is 50% of the grade. Labs submitted more than three days late will get 0% of the grade.
